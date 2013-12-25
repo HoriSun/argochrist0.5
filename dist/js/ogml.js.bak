@@ -234,6 +234,7 @@ function typename(object){
 
 /* resource alisa */
 var alisa = {};
+var imageList = {};
 
 function showOnload(){
 	this.style.display = "";
@@ -365,6 +366,7 @@ var SYMBOL_A = "A"
 , EMPTY = '_';
 
 
+
 /* @c : context object
  * - ret : compile return value
  * - ret.ins : instruction
@@ -389,8 +391,10 @@ var ogml_rules = [  // parsing with these rules will be finished before UI shows
 			var tmp = m[1].trim().match(/-ava(\d*)/);
 			if(tmp)
 				if(tmp.length==2)
-					for(var i=0;i<parseInt(tmp[1]);i++)
+					for(var i=0;i<parseInt(tmp[1]);i++){
 						new Image().src = m[2].trim()+"_"+i+".png";
+						imageList[m[1].replace(/-ava\d*\s/,"").trim()+"_"+i] = new Image().src = m[2].trim()+"_"+i+".png";
+					}
 				else
 					new Image().src = m[2].trim();
 		}
@@ -658,7 +662,7 @@ var home_option = [
 		window.r._view.homepage_on = false;
 		window.r._view.lock_talk = false;
 		window.r.step_one();
-	},'../resources/home-start.png'],
+	},'../resources/home-start-over.png'],
 	['home-continue',function(){
 		console.log('continue');
 		$$('home').style.display ="none";
@@ -671,11 +675,11 @@ var home_option = [
 		}
 		window.r._lock = false;
 		window.r.step_one();
-	},'../resources/home-continue.png'],
+	},'../resources/home-continue-over.png'],
 	['home-argo',function(){
 		console.log('argo');
 		window.open('http://argo.sysu.edu.cn');
-	},'../resources/home-yatsen.png'],
+	},'../resources/home-argo.png'],
 ];
 
 
@@ -700,6 +704,7 @@ var homeLoader = function(){
 				$$('home').appendChild(home_child);		
 				$$('home').children[i+2].id = home_option[i][0];
 				$$('home').children[i+2].addEventListener('click',home_option[i][1]);
+				$$('home').children[i+2].style.backgroundImage = home_option[i][1];
 			}
 		}
 	}
@@ -971,7 +976,7 @@ OgMLView.prototype.talk = function(talker, words, callback,ava_num){
 		name_loc = alisa['@'+talker+'-name'];
 		$$('talker').style.display = "none";
 	}
-	console.log(alisa['@hero']+"| "+talker);
+
 	if(ava_loc){
 		$$('name-img').setAttribute("src",name_loc); // set name image location
 		if(!holdAvatar)
@@ -1142,9 +1147,21 @@ var ctrl_option = [  // Asynchronous control ,for each element, [0]name [1]funct
 		window.r._status._PC--;
 		return homeLoader;
 	},("return homeLoader()")],
-	// ["menu",function menu(){
-		// console.log	(noew+" in menu");
-	// }]
+	["help",function help(){
+		window.r._view.lock_talk = true;
+		var args={};
+		args.text = "   小伙伴们，欢迎你们来到argo的世界。下面是这个世界的温馨提示，要好好记住哦～ =___,=\n\
+    1，如果你顺利通过重重难关，达到游戏的最后，那么我们将为你提供很多精美礼品哦～（先到先得，送完为止）并且将由可爱的妹子亲手送到你宿舍！那么，如何领取奖品呢？XD等你玩到游戏的最后自然就看到啦！\n\
+    2，如果你在游戏中有任何问题，对我们有任何意见，或者遇到了不会的题目，都可以去 http://argo.sysu.edu.cn 寻找答案，或者发帖询问！发帖请发到7区“逸仙时空圣诞嘉联华”版！\n\
+    3，如果游戏图片一时未加载出来，请耐心等一下哦！下一秒就会出现啦！\n\
+";
+		window.r._status._PC--;
+		args.ops=[["返回", "return"]];
+		window.r._view.select(args, function(step, number){
+            window.r.ins_done();
+			window.r._view.lock_talk = false;
+        });
+	},("return ctrl_option[3][1]()")],
 ];	
 
 var saveLoadGame =function(op){

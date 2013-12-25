@@ -510,7 +510,7 @@ body{
 	top:5px;
 }
 
-#save,#load,#menu{
+#save,#load,#menu,#help{
 	display:inline-block;
 	padding:0px 12px 2px 12px;
 	line-height:1.2em;
@@ -522,16 +522,8 @@ body{
 	cursor: pointer;
 }
 
-#save:hover,#load:hover,#menu:hover{
+#save:hover,#load:hover,#menu:hover,#help:hover{
 	color:rgba(255,255,255,1);
-}
-
-#save:hover{
-	
-}
-#load:hover{
-}
-#menu:hover{
 }
 
 #talker{
